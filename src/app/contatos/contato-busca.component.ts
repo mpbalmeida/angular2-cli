@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, SimpleChange, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
@@ -17,8 +17,9 @@ import { ContatoService } from './contato.service';
         }`
     ]
 })
-export class ContatoBuscaComponent implements OnInit {
+export class ContatoBuscaComponent implements OnInit, OnChanges {
 
+    @Input() busca: String;
     contatos: Observable<Contato[]>
     private termosBuscados: Subject<string> = new Subject<string>();
 
@@ -39,11 +40,16 @@ export class ContatoBuscaComponent implements OnInit {
 
     }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        let busca: SimpleChange = changes['busca'];
+        this.search(busca.currentValue);
+    }
+
     search(term: string): void {
         this.termosBuscados.next(term);
     }
 
-    verDetalhe(contato: Contato):void {
+    verDetalhe(contato: Contato): void {
         let link = ['contato/save', contato.id];
         this.router.navigate(link);
     }
